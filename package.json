@@ -1,0 +1,52 @@
+{
+  "name": "api-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "server-dev": "cross-env NODE_ENV=prod nodemon server/index.js",
+    "client-dev": "npm start --prefix client",
+    "start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
+    "fix:other": "npm run prettier --write",
+    "fix:js": "npm run test:js --fix",
+    "fix": "npm run fix:js && npm run fix:other",
+    "prettier": "prettier \"**/*.{json,md,scss,yaml,yml}\"",
+    "test:other": "npm run prettier --list-different",
+    "test:js": "eslint --ignore-path .gitignore --ignore-path .prettierignore \"**/*.{js,jsx}\"",
+    "test": "npm run test:other && npm run test:js"
+  },
+  "author": "Adam Cuffe",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "express-promise-router": "^3.0.3",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.0",
+    "lodash": "^4.17.11",
+    "mailgun-js": "^0.22.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.4.17",
+    "mongoose-deep-populate": "^3.1.1",
+    "morgan": "^1.9.1",
+    "nodemailer": "^5.1.1",
+    "nodemon": "^1.18.10",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "swagger-ui-express": "^4.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "4.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-prettier": "3.0.1",
+    "prettier": "1.16.4"
+  }
+}

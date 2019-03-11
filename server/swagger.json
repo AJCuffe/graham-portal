@@ -1,0 +1,57 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Graham Construction API",
+    "contact" : {
+      "name" : "Adam Cuffe",
+      "email" : "adam.cuffe@graham.co.uk"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "paths" : {
+    "/users" : {
+      "get" : {
+        "description" : "Returns an object containing all users",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned all users"
+          }
+        }
+      }
+    },
+    "/roles" : {
+      "get" : {
+        "description" : "Returns an object containing all roles",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned all roles"
+          }
+        }
+      }
+    },
+    "/packages" : {
+      "get" : {
+        "description" : "Returns an object containing all packages",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned all packages"
+          }
+        }
+      }
+    },
+    "/projects" : {
+      "get" : {
+        "description" : "Returns and object containing all projects",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned all projects"
+          }
+        }
+      }
+    }
+  },
+  "components" : { }
+}
