@@ -83,7 +83,7 @@ module.exports = {
     const { timesheetId } = req.value.params;
     if (!isValidObjectId(timesheetId)) { errorHelper.timesheet.invalidId(res); }
     const foundTimesheets = await Timesheet.find({ _id: timesheetId })
-      .deepPopulate('bookedHours.projectId bookedHours.projectId.package');
+      .deepPopulate('bookedHours.projectId bookedHours.projectId.package userId');
     if (!foundTimesheets || foundTimesheets.length === 0) {
       errorHelper.timesheet.invalidTimesheetId(res);
     }

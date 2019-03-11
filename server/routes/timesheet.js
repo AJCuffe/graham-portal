@@ -9,6 +9,7 @@ const {
 } = require('../helpers/route_helper');
 
 const TimesheetController = require('../controllers/timesheet');
+const PDFController = require('../controllers/pdf_generate');
 
 // eslint-disable-next-line no-unused-vars
 const passportJWT = passport.authenticate('jwt', { session: false });
@@ -113,6 +114,8 @@ router.route('/unlocked/:weekEndingUnix').get(
   validateParams(paramsSchemas.timesheet.readUnlockedByUnix),
   TimesheetController.readTimesheetByUnlockedStatus,
 );
+
+router.route('/pdf/:timesheetId').get(validateParams(paramsSchemas.timesheet.readTimesheetById), PDFController.generate);
 
 /*******************************************************************************************
 *                                     PUT ROUTES

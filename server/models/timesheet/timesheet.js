@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const timesheetSchema = new Schema({
   userId: {
-    type: Schema.Types.ObjectId,
+    type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
     required: true,
   },
   weekEnding: {
@@ -65,21 +65,24 @@ const timesheetSchema = new Schema({
   },
 });
 
-timesheetSchema.pre('save', async (next) => {
-  try {
-    // Total up all the hours
-    let grandTotalHours = 0;
-    this.bookedHours.forEach((booking) => {
-      grandTotalHours += booking.mon + booking.tue + booking.wed + booking.thu
-      + booking.fri + booking.sat + booking.sun;
-    });
-    this.totalHours = grandTotalHours;
-    this.weekEndingUnix = Date.parse(this.weekEnding);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+// timesheetSchema.pre('save', async (next) => {
+//   try {
+//     // Total up all the hours
+//     let grandTotalHours = 0;
+    
+//     console.log(this);
+    
+//     this.bookedHours.forEach((booking) => {
+//       grandTotalHours += booking.mon + booking.tue + booking.wed + booking.thu
+//       + booking.fri + booking.sat + booking.sun;
+//     });
+//     this.totalHours = grandTotalHours;
+//     this.weekEndingUnix = Date.parse(this.weekEnding);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 const Timesheet = mongoose.model('timesheet', timesheetSchema);
 
