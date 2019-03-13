@@ -83,16 +83,18 @@ module.exports = {
 
       await fs.writeFile(`./server/pdf-output/${filename}.html`,
         result, (err) => {
-          if(err) { errorHelper.htmlPdfConversion.errorWritingHtml(res) }
+          if (err) { 
+            errorHelper.htmlPdfConversion.errorWritingHtml(res)
+          }
 
           // convert to PDF and delete the HTML
           const html = fs.readFileSync(path.join(__dirname, `../pdf-output/${filename}.html`), 'utf-8');
-          var options = { format: 'A4', orientation: 'landscape' };
+          const options = { format: 'A4', orientation: 'landscape' };
           
           pdf.create(html, options).toFile(path.join(__dirname, `../pdf-output/${filename}.pdf`), function(err, res) {
             if (err) { errorHelper.htmlPdfConversion.errorWritingPdf(res) }
-          });
-      });
-        
+          });    
+
+        });   
     }
 }
