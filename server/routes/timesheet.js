@@ -115,7 +115,10 @@ router.route('/unlocked/:weekEndingUnix').get(
   TimesheetController.readTimesheetByUnlockedStatus,
 );
 
-router.route('/pdf/:timesheetId').get(validateParams(paramsSchemas.timesheet.readTimesheetById), PDFController.generate);
+router.route('/pdf/:timesheetId').post(validateParams(
+  paramsSchemas.timesheet.readTimesheetById), 
+  validateBody(bodySchemas.timesheet.convertTimesheetToPDF), 
+  PDFController.generate);
 
 /*******************************************************************************************
 *                                     PUT ROUTES

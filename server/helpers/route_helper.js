@@ -114,6 +114,11 @@ module.exports = {
         emailTo: Joi.string().email().required(),
       }),
     },
+    timesheet: {
+      convertTimesheetToPDF: {
+        userId: Joi.string().required()
+      }
+    }
   },
   paramsSchemas: {
     user: {

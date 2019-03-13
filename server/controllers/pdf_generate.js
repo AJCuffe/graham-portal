@@ -15,11 +15,13 @@ const errorHelper = require('../helpers/error_helper');
 module.exports = {
     generate: async (req, res) => {
         
-        console.log('Hit the PDF generate endpoint');
-        
         // Find the timesheet from the database
        const { timesheetId } = req.value.params;
+       const { userId } = req.value.body;
+
        if (!isValidObjectId(timesheetId)) { errorHelper.timesheet.invalidId(res); }
+       if (!isValidObjectId(userId)) { errorHelper.user.invalidId(res); }
+
         const foundTimesheet = await Timesheet.find({ _id: timesheetId })
           .deepPopulate('bookedHours.projectId bookedHours.projectId.package userId');
         if (!foundTimesheet || foundTimesheet.length === 0) {
@@ -66,35 +68,30 @@ module.exports = {
         });
 
         // Pass the 'timesheet' object to the html compiler
-        module.exports.compileToHtml(finalObjectToProcess);
-        res.json(finalObjectToProcess);
+        module.exports.compileToHtml(res, finalObjectToProcess, userId);
+        res.status(200).json({ success: true, message: 'Successfully generated printable HTML timesheets.'})
       
     },
-    compileToHtml: async (objectToProcess) => {
+    compileToHtml: async (res, objectToProcess, userId) => {
 
       const template = Handlebars.compile(
         fs.readFileSync(__dirname +   '/templates/timesheet.hbs')
         .toString('utf-8'));
 
-        const result = template(objectToProcess);
+      const result = template(objectToProcess);
+      const filename = userId + Date.now();
 
-      await fs.writeFile(`./server/pdf-output/output.html`,
-        result, (err, result) => {
-          if(err) {
-            console.log(err);
-          }
-
-          console.log('wrote file');
+      await fs.writeFile(`./server/pdf-output/${filename}.html`,
+        result, (err) => {
+          if(err) { errorHelper.htmlPdfConversion.errorWritingHtml(res) }
 
           // convert to PDF and delete the HTML
-          const html = fs.readFileSync(path.join(__dirname, '../pdf-output/output.html'), 'utf-8');
-          var options = { format: 'A4', orientation: 'landscape', renderDelay: 500 };
+          const html = fs.readFileSync(path.join(__dirname, `../pdf-output/${filename}.html`), 'utf-8');
+          var options = { format: 'A4', orientation: 'landscape' };
           
-          pdf.create(html, options).toFile(path.join(__dirname, '../pdf-output/output.pdf'), function(err, res) {
-            if (err) return console.log(err);
-            console.log(res); // { filename: '/app/businesscard.pdf' }
+          pdf.create(html, options).toFile(path.join(__dirname, `../pdf-output/${filename}.pdf`), function(err, res) {
+            if (err) { errorHelper.htmlPdfConversion.errorWritingPdf(res) }
           });
-
       });
         
     }

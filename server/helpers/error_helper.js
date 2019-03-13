@@ -73,5 +73,9 @@ module.exports = {
   sendEmail: {
     doesNotExist: res => res.status(422).json({ success: false, message: 'Email could not be sent as a template with the specified template name does not exist in the database'}),
     couldNotSend: res => res.status(500).json({ success: false, message: 'There was an error whilst attempting to send the email'}),
+  },
+  htmlPdfConversion: {
+    errorWritingHtml: res => res.status(500).json({ success: false, message: 'There was an error whilst attempting to render the HTML timesheet'}),
+    errorWritingPdf: res => res.status(500).json({ success: false, message: 'There was an error whilst attempting to write the PDF timesheet'}),
   }
 };
