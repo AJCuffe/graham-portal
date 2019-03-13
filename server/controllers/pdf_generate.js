@@ -1,9 +1,9 @@
-const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const moment = require('moment');
+const path = require('path');
 const mongoose = require('mongoose');
 const deepPopulate = require('mongoose-deep-populate')(mongoose);
-const handlebars = require('handlebars');
+const Handlebars = require('handlebars');
+const pdf = require('html-pdf');
 
 const { timesheetSchema, Timesheet } = require('../models/timesheet/timesheet');
 timesheetSchema.plugin(deepPopulate);
@@ -25,59 +25,77 @@ module.exports = {
         if (!foundTimesheet || foundTimesheet.length === 0) {
           errorHelper.timesheet.invalidTimesheetId(res);
         }
-        
-        const document = new PDFDocument({
-          size: 'legal',
-          layout: 'landscape',
-          fontSize: 10,
-        });
-        
-        const { firstName, lastName } = foundTimesheet[0].userId[0];
-        
-        module.exports.compileToHtml(foundTimesheet[0]);
-        
-        const parsedDate = moment.unix(foundTimesheet[0].weekEndingUnix).format("MM/DD/YYYY");
-        
-        // Format the outputted document
-        document.fontSize(15).text(`${firstName} ${lastName} - Graham Timesheet for WE ${parsedDate}`, 50, 50);
-        document.text(' ');
-        
-        await foundTimesheet[0].bookedHours.forEach((booking) => {
-           document.text(`${booking.projectId[0].pinNumber} - ${booking.projectId[0].projectName}`);
-           document.text(' ');
-           document.text('Mon: ' + booking.mon);
-           document.text('Tue: ' + booking.tue);
-           document.text('Wed: ' + booking.wed);
-           document.text('Thu: ' + booking.thu);
-           document.text('Fri: ' + booking.fri);
-           document.text('Sat: ' + booking.sat);
-           document.text('Sun: ' + booking.sun);
-           document.text(' ');
-        });
-        
-        document.text(' ');
-        
-        const outputPath = './server/pdf-output/timesheet.pdf';
-        const output = document.pipe(fs.createWriteStream(outputPath));
-        document.end();
-    },
-    compileToHtml: (objectToProcess) => {
+      
+        let finalObjectToProcess = {
+          timesheets: []
+        };
 
-        const tpl = handlebars.compile(
-            fs.readFileSync(__dirname +   '/templates/timesheet.hbs')
-            .toString('utf-8'));
-        
-        console.log(objectToProcess);
-        
-        const result = tpl({
-            title: `${objectToProcess.userId[0].firstName} ${objectToProcess.userId[0].lastName}`
+        foundTimesheet.forEach((timesheet) => {
+
+          let objectToProcess = {
+            timesheet: [{
+              firstName: timesheet.userId[0].firstName,
+              lastName: timesheet.userId[0].lastName,
+              locked: timesheet.locked,
+              submitted: timesheet.submitted,
+              approved: timesheet.approved,
+              rejected: timesheet.rejected,
+              weekEnding: timesheet.weekEnding,
+            }]
+          };
+
+         let bookedHours = [];
+
+        timesheet.bookedHours.forEach((item) => {
+          let project = {
+            pinNumber: item.projectId[0].pinNumber,
+            projectName: item.projectId[0].projectName,
+            mon: item.mon,
+            tue: item.tue,
+            wed: item.wed,
+            thu: item.thu,
+            fri: item.fri,
+            sat: item.sat,
+            sun: item.sun
+          };
+          bookedHours.push(project);
         });
-        
-        fs.writeFile(`./server/pdf-output/${objectToProcess.userId[0]._id}_${Date.now()}.html`,
+
+         objectToProcess.timesheet[0].bookedHours = bookedHours;
+         finalObjectToProcess.timesheets.push(objectToProcess);
+        });
+
+        // Pass the 'timesheet' object to the html compiler
+        module.exports.compileToHtml(finalObjectToProcess);
+        res.json(finalObjectToProcess);
+      
+    },
+    compileToHtml: async (objectToProcess) => {
+
+      const template = Handlebars.compile(
+        fs.readFileSync(__dirname +   '/templates/timesheet.hbs')
+        .toString('utf-8'));
+
+        const result = template(objectToProcess);
+
+      await fs.writeFile(`./server/pdf-output/output.html`,
         result, (err, result) => {
-            if(err) {
-                console.log(err);
-            }
-        });
+          if(err) {
+            console.log(err);
+          }
+
+          console.log('wrote file');
+
+          // convert to PDF and delete the HTML
+          const html = fs.readFileSync(path.join(__dirname, '../pdf-output/output.html'), 'utf-8');
+          var options = { format: 'A4', orientation: 'landscape', renderDelay: 500 };
+          
+          pdf.create(html, options).toFile(path.join(__dirname, '../pdf-output/output.pdf'), function(err, res) {
+            if (err) return console.log(err);
+            console.log(res); // { filename: '/app/businesscard.pdf' }
+          });
+
+      });
+        
     }
 }

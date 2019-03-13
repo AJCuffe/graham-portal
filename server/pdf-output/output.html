@@ -23,11 +23,9 @@
 
     <!-- Each sheet element should have the class "sheet" -->
     <!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
-    {{#each timesheets}}
-      {{#each timesheet}}
         <section class="sheet padding-10mm">
           <div class="container">
-              <p style="font-size: 14px;">Timesheet for {{firstName}} {{lastName}}</p>
+              <p style="font-size: 14px;">Timesheet for Adam Cuffe</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -45,26 +43,48 @@
                   </tr>
                 </thead>
               <tbody>
-                {{#each bookedHours}}
                 <tr>
-                  <th scope="row" style="width: 10%;">{{this.pinNumber}}</th>
-                  <td style="width: 19%;">{{this.projectName}}</td>
-                  <td style="width: 5%;">{{this.mon}}</td>
-                  <td style="width: 5%;">{{this.tue}}</td>
-                  <td style="width: 5%;">{{this.wed}}</td>
-                  <td style="width: 5%;">{{this.thu}}</td>
-                  <td style="width: 5%;">{{this.fri}}</td>
-                  <td style="width: 5%;">{{this.sat}}</td>
-                  <td style="width: 5%;">{{this.sun}}</td>
+                  <th scope="row" style="width: 10%;">437564e</th>
+                  <td style="width: 19%;">D&amp;E Project</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
                   <td style="width: 5%; font-weight: bold;">45</td>
                   <td style="width: 31%;">This is the description of works. Generally people will do general office duties or general site duties.</td>
                 </tr>
-                {{/each}}
+                <tr>
+                  <th scope="row" style="width: 10%;">561779</th>
+                  <td style="width: 19%;">Guyhirn Slope Failure</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%; font-weight: bold;">45</td>
+                  <td style="width: 31%;">This is the description of works. Generally people will do general office duties or general site duties.</td>
+                </tr>
+                <tr>
+                  <th scope="row" style="width: 10%;">437564e</th>
+                  <td style="width: 19%;">D&amp;E Project</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%;">3</td>
+                  <td style="width: 5%; font-weight: bold;">45</td>
+                  <td style="width: 31%;">This is the description of works. Generally people will do general office duties or general site duties.</td>
+                </tr>
               </tbody>
             </table>
           </div>
       </section>
-      {{/each}}
-    {{/each}}
   </body>
 </html>
